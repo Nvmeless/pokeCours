@@ -20,6 +20,7 @@ class AppFixtures extends Fixture
         $min = 0;
         $max = 255;
         // $manager->persist($product);
+        $pokedexs = [];
         for($i = 1; $i < 152;$i++){
 
             $pokedex = new Pokedex();
@@ -36,8 +37,15 @@ class AppFixtures extends Fixture
             $pokedex->setSpecialMin(random_int($min,$max));
             $pokedex->setPokemonIdFirst(random_int(1,151));
             $pokedex->setPokemonIdSecond(random_int(1,151));
+            $pokedexs[] = $pokedex;
+        }
+        foreach($pokedexs as $pokedex){
+            if(random_int(0,1)){
+                $pokedex->addDevolutionId($pokedexs[array_rand($pokedexs, 1)]);
+            }
             $manager->persist($pokedex);
         }
+        
         $manager->flush();
     }
 }

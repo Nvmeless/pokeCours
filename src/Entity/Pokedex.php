@@ -17,7 +17,8 @@ class Pokedex
     #[ORM\Column]
     #[Groups(["getAllPokedex"])]
     private ?int $id = null;
-
+    
+    //To Anonymise
     #[ORM\Column(length: 255)]
     #[Groups(["getAllPokedex"])]
     private ?string $name = null;

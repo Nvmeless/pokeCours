@@ -101,15 +101,22 @@ class PokedexController extends AbstractController
         Request $request,
         SerializerInterface $serializer,
         EntityManagerInterface $entityManager,
-        UrlGeneratorInterface $urlGenerator
+        UrlGeneratorInterface $urlGenerator,
+        PokedexRepository $repository
     ):JsonResponse
     {
         $updatedPokedex = $serializer->deserialize($request->getContent(),Pokedex::class,'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $pokedex]);
         
         $content = $request->toArray();
-        $idDevolution = $content["idDevolution"] ?? -1;
-        
-        $updatedPokedex->addDevolutionId($idDevolution);
+        if(isset($content["idDevolution"])){
+                $idDevolutions = $content["idDevolution"];
+                foreach ($updatedPokedex->getDevolutionId() as $key => $devolutions_Id) {
+                    $updatedPokedex->removeDevolutionId($devolutions_Id);
+                }
+                $relatedEntity = $repository->find($idDevolutions);
+                $updatedPokedex->addDevolutionId($relatedEntity);
+            }
+        // $updatedPokedex->addDevolutionId($idDevolution);
 
         $entityManager->persist($updatedPokedex);
         $entityManager->flush();
@@ -118,4 +125,19 @@ class PokedexController extends AbstractController
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
 
     }
+
+    #[Route("/api/pokedex/delete/{idPokedex}", name:"pokedex.delete", methods: ["DELETE"])]
+    #[ParamConverter("pokedex", options:["id" => "idPokedex"])]
+    public function forcDeleteFromPokedex(
+        Pokedex $pokedex, 
+        EntityManagerInterface $entityManager
+        ): JsonResponse
+    {
+        $entityManager->remove($pokedex);
+        $entityManager->flush();
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
+
+
+
 }
