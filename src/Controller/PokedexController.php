@@ -18,6 +18,7 @@ use App\Repository\PokedexRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class PokedexController extends AbstractController
 {
@@ -62,11 +63,12 @@ class PokedexController extends AbstractController
         SerializerInterface $serializer
     ):JsonResponse
     {
+        
         // $request = Request::createFromGlobals();
         // $paramId = $request->query->get('id');
         // $parameters = 
         // $pokedex = $repository->find($paramId);
-        $jsonPokedex = $serializer->serialize($pokedex, 'json');
+        $jsonPokedex = $serializer->serialize($pokedex, 'json', ["groups" => 'getAllPokedex']);
         return new JsonResponse($jsonPokedex, Response::HTTP_OK,[], true);
     }
 
@@ -82,10 +84,15 @@ class PokedexController extends AbstractController
         Request $request,
         SerializerInterface $serializer,
         EntityManagerInterface $entityManager,
-        UrlGeneratorInterface $urlGenerator
+        UrlGeneratorInterface $urlGenerator,
+        ValidatorInterface $validator
     ):JsonResponse
     {
         $pokedex = $serializer->deserialize($request->getContent(), Pokedex::class,'json');
+        $errors = $validator->validate($pokedex);
+        if(count($errors) > 0){
+            return new JsonResponse($serializer->serialize($errors, 'json'), Response::HTTP_BAD_REQUEST,[], true);
+        }
         $entityManager->persist($pokedex);
         $entityManager->flush();
         $jsonPokedex = $serializer->serialize($pokedex, 'json', ["groups" => "getAllPokedex"]);

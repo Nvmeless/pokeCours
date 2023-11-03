@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 use Symfony\Component\Serializer\Annotation\Groups;
 
+use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: PokedexRepository::class)]
 class Pokedex
 {
@@ -20,6 +21,13 @@ class Pokedex
     
     //To Anonymise
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message:"une entree pokedex doit avoir un nom")]
+    #[Assert\Length(
+        min: 2,
+        max: 5,
+        minMessage: 'Your first name must be at least {{ limit }} characters long',
+        maxMessage: 'Your first name cannot be longer than {{ limit }} characters',
+    )]
     #[Groups(["getAllPokedex"])]
     private ?string $name = null;
 
