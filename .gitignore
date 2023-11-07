@@ -7,4 +7,6 @@
 /public/bundles/
 /var/
 /vendor/
+/public/images
+/public/medias
 ###< symfony/framework-bundle ###

@@ -8,6 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 
+#[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: PictureRepository::class)]
 class Picture
 {
@@ -31,11 +32,9 @@ class Picture
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $uploadDate = null;
 
-    /**
-     * @var File|null
-     * @Vich\UploadableField(mapping="pictures", fileNameProperty="realpath")
-     */
+    #[Vich\UploadableField(mapping: "pictures", fileNameProperty: "realpath")]
     private $file;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -107,6 +106,7 @@ class Picture
 
     public function setFile(?File $file): ?Picture
     {
+     
         $this->file = $file;
         return $this;
     }

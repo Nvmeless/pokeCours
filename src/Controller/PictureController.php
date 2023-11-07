@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints\Url;
 
 class PictureController extends AbstractController
 {
-    #[Route('/picture', name: 'app_picture')]
+    #[Route('/', name: 'app_picture')]
     public function index(): JsonResponse
     {
         return $this->json([
@@ -60,7 +60,7 @@ class PictureController extends AbstractController
             $picture->setFile($file);
             $picture->setMime($file->getClientMimeType());
             $picture->setRealname($file->getClientOriginalName());
-            $picture->setPublicpath('/public/images/pictures');
+            $picture->setPublicpath('/public/medias/pictures');
             $picture->setUploadDate(new \DateTime());
             
             $entityManager->persist($picture);
