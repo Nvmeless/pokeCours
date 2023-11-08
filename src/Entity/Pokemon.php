@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PokemonRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PokemonRepository::class)]
 class Pokemon
@@ -14,18 +15,27 @@ class Pokemon
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["getAllPokedex"])]
+
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Groups(["getAllPokedex"])]
+
     private ?int $pv_max = null;
 
     #[ORM\Column]
+    #[Groups(["getAllPokedex"])]
+
     private ?int $pv = null;
 
     #[ORM\Column]
+    #[Groups(["getAllPokedex"])]
+
     private ?int $level = null;
 
     #[ORM\ManyToOne(inversedBy: 'pokemon')]
+    #[Groups(["getAllPokedex"])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Pokedex $pokedex = null;
 

@@ -23,7 +23,7 @@ class AppFixtures extends Fixture
         // $manager->persist($product);
         $pokedexs = [];
 
-        $pokedexNames = ["MecaZouzoumon", "ZouzouMon", "Kripipomon", "Chimpokomon", "Ramon", "Croketasderamon"];
+        $pokedexNames = ["MecaZouzoumon","Shmiromon","Chaussure","Anemon","Veylsimon","Kiffounmon", "ZouzouMon", "Kripipomon", "Chimpokomon", "Ramon", "Croketasderamon"];
 
 
         for($i = 1; $i < 152;$i++){

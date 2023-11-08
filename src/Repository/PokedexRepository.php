@@ -20,6 +20,14 @@ class PokedexRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Pokedex::class);
     }
+    public function getPokedexCount(): int{
+        // return 4;
+        return $this->createQueryBuilder('p')
+            ->select('count(p.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+    }
 
 //    /**
 //     * @return Pokedex[] Returns an array of Pokedex objects
