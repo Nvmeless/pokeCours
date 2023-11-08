@@ -87,9 +87,13 @@ class Pokedex
     #[Groups(["getAllPokedex"])]
     private ?int $pokemon_id_second = null;
 
+    #[ORM\OneToMany(mappedBy: 'pokedex', targetEntity: Pokemon::class)]
+    private Collection $pokemon;
+
     public function __construct()
     {
         $this->devolution_id = new ArrayCollection();
+        $this->pokemon = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -296,6 +300,36 @@ class Pokedex
     public function setPokemonIdSecond(int $pokemon_id_second): static
     {
         $this->pokemon_id_second = $pokemon_id_second;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Pokemon>
+     */
+    public function getPokemon(): Collection
+    {
+        return $this->pokemon;
+    }
+
+    public function addPokemon(Pokemon $pokemon): static
+    {
+        if (!$this->pokemon->contains($pokemon)) {
+            $this->pokemon->add($pokemon);
+            $pokemon->setPokedex($this);
+        }
+
+        return $this;
+    }
+
+    public function removePokemon(Pokemon $pokemon): static
+    {
+        if ($this->pokemon->removeElement($pokemon)) {
+            // set the owning side to null (unless already changed)
+            if ($pokemon->getPokedex() === $this) {
+                $pokemon->setPokedex(null);
+            }
+        }
 
         return $this;
     }
