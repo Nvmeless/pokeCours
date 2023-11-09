@@ -92,7 +92,7 @@ class PokemonController extends AbstractController
         // $pokedex = $serializer->deserialize($request->getContent(), Pokedex::class,'json');
 
         
-        
+
         //Catch rate
         if(rand(1,100) %2=== 0) {
             $pokemon = new Pokemon();
@@ -106,6 +106,8 @@ class PokemonController extends AbstractController
 
             $pokemon->setName($pokedexRef->getName());
             $pokemon->setPokedex($pokedexRef);
+            //Set master of this pokemon
+            $pokemon->setMaster($this->getUser());
 
             $stats = $this->setStats($pokemon, $pokedexRef, 'Pv');
             $pokemon->setLevel(rand(1, 100));

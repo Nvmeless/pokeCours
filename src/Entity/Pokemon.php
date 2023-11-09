@@ -39,6 +39,9 @@ class Pokemon
     #[ORM\JoinColumn(nullable: false)]
     private ?Pokedex $pokedex = null;
 
+    #[ORM\ManyToOne(inversedBy: 'pokemon')]
+    private ?User $master = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -100,6 +103,18 @@ class Pokemon
     public function setPokedex(?Pokedex $pokedex): static
     {
         $this->pokedex = $pokedex;
+
+        return $this;
+    }
+
+    public function getMaster(): ?User
+    {
+        return $this->master;
+    }
+
+    public function setMaster(?User $master): static
+    {
+        $this->master = $master;
 
         return $this;
     }
