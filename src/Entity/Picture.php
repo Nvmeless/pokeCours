@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use App\Repository\PictureRepository;
 use Doctrine\DBAL\Types\Types;
@@ -34,6 +36,14 @@ class Picture
 
     #[Vich\UploadableField(mapping: "pictures", fileNameProperty: "realpath")]
     private $file;
+
+    #[ORM\OneToMany(mappedBy: 'sprite', targetEntity: Itemdex::class)]
+    private Collection $itemdexes;
+
+    public function __construct()
+    {
+        $this->itemdexes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -108,6 +118,36 @@ class Picture
     {
      
         $this->file = $file;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Itemdex>
+     */
+    public function getItemdexes(): Collection
+    {
+        return $this->itemdexes;
+    }
+
+    public function addItemdex(Itemdex $itemdex): static
+    {
+        if (!$this->itemdexes->contains($itemdex)) {
+            $this->itemdexes->add($itemdex);
+            $itemdex->setSprite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeItemdex(Itemdex $itemdex): static
+    {
+        if ($this->itemdexes->removeElement($itemdex)) {
+            // set the owning side to null (unless already changed)
+            if ($itemdex->getSprite() === $this) {
+                $itemdex->setSprite(null);
+            }
+        }
+
         return $this;
     }
 }

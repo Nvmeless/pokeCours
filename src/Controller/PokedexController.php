@@ -72,7 +72,7 @@ class PokedexController extends AbstractController
         return new JsonResponse($jsonPokedex, Response::HTTP_OK,[], true);
     }
 
-        /**
+    /**
      * creer un Pokemon
      * 
      * @param Pokedex $pokedex

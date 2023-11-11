@@ -28,7 +28,7 @@ class Pokedex
         minMessage: 'Your first name must be at least {{ limit }} characters long',
         maxMessage: 'Your first name cannot be longer than {{ limit }} characters',
     )]
-    #[Groups(["getAllPokedex"])]
+    #[Groups(["getAllPokedex", "getProfile"])]
     private ?string $name = null;
 
     #[ORM\Column]
@@ -80,11 +80,11 @@ class Pokedex
     private Collection $devolution_id;
 
     #[ORM\Column]
-    #[Groups(["getAllPokedex"])]
+    #[Groups(["getAllPokedex", "getProfile"])]
     private ?int $pokemon_id_first = null;
 
     #[ORM\Column]
-    #[Groups(["getAllPokedex"])]
+    #[Groups(["getAllPokedex", "getProfile"])]
     private ?int $pokemon_id_second = null;
 
     #[ORM\OneToMany(mappedBy: 'pokedex', targetEntity: Pokemon::class)]

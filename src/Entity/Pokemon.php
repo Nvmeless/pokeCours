@@ -15,7 +15,7 @@ class Pokemon
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getAllPokedex"])]
+    #[Groups(["getAllPokedex","getProfile"])]
 
     private ?string $name = null;
 
@@ -30,12 +30,12 @@ class Pokemon
     private ?int $pv = null;
 
     #[ORM\Column]
-    #[Groups(["getAllPokedex"])]
+    #[Groups(["getAllPokedex","getProfile"])]
 
     private ?int $level = null;
 
     #[ORM\ManyToOne(inversedBy: 'pokemon')]
-    #[Groups(["getAllPokedex"])]
+    #[Groups(["getAllPokedex","getProfile"])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Pokedex $pokedex = null;
 
