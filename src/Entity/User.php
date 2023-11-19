@@ -15,15 +15,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+    #[Groups(["getProfile", 'getBattleInfos'])]
     #[ORM\Column]
     private ?int $id = null;
-    #[Groups(["getProfile"])]
+    #[Groups(["getProfile", 'getBattleInfos'])]
 
     #[ORM\Column(length: 180, unique: true)]
     private ?string $username = null;
 
     #[ORM\Column]
-    #[Groups(["getProfile"])]
+    #[Groups(["getProfile", 'getBattleInfos'])]
     private array $roles = [];
 
     /**
@@ -40,10 +41,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Inventory::class, mappedBy: 'owner')]
     private Collection $inventories;
 
+    #[ORM\OneToMany(mappedBy: 'master', targetEntity: Team::class)]
+    #[Groups(["getProfile", 'getBattleInfos'])]
+
+    private Collection $teams;
+
     public function __construct()
     {
         $this->pokemon = new ArrayCollection();
         $this->inventories = new ArrayCollection();
+        $this->teams = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -171,5 +178,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+
+
+
+    /**
+     * @return Collection<int, Team>
+     */
+    public function getTeams(): Collection
+    {
+        return $this->teams;
     }
 }

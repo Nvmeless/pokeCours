@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Team;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\Pokedex;
@@ -27,12 +28,16 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-          $publicUser = new User();
+
+        $users = [];
+
+        //Set Public User
+        $publicUser = new User();
         $publicUser->setUsername("public");
         $publicUser->setRoles(["PUBLIC"]);
         $publicUser->setPassword($this->userPasswordHasher->hashPassword($publicUser, "public"));
         $manager->persist($publicUser);
-
+        $users[] = $publicUser;
 
         // Authentifiés
         for ($i = 0; $i < 5; $i++) {
@@ -42,6 +47,8 @@ class AppFixtures extends Fixture
             $userUser->setRoles(["USER"]);
             $userUser->setPassword($this->userPasswordHasher->hashPassword($userUser, $password));
             $manager->persist($userUser);
+            $users[] = $userUser;
+
         }
 
 
@@ -51,6 +58,8 @@ class AppFixtures extends Fixture
         $adminUser->setRoles(["ADMIN"]);
         $adminUser->setPassword($this->userPasswordHasher->hashPassword($adminUser, "password"));
         $manager->persist($adminUser);
+        $users[] = $adminUser;
+
         // $product = new Product();
         $min = 0;
         $max = 255;
@@ -105,22 +114,41 @@ class AppFixtures extends Fixture
         }
         
         $pokemons = [];
-        for($i = 1; $i < 3;$i++){
-            $pokemon = new Pokemon();
-            $pokedexRef = $pokedexs[array_rand($pokedexs, 1)];
-            $pokemon->setName($pokedexRef->getName());
-            $pvMax =rand($pokedexRef->getPvMin(),$pokedexRef->getPvMax());
-            $pokemon->setPvMax($pvMax);
-            $pokemon->setPv(rand(0, $pvMax));
-            $pokemon->setLevel(rand(0, 100));
+        foreach($users as $user){
+            $teamPokemons = [];
+            for($i = 1; $i < 4;$i++){
+                $pokemon = new Pokemon();
+                $pokedexRef = $pokedexs[array_rand($pokedexs, 1)];
+                $pokemon->setName($pokedexRef->getName());
+                $pvMax =rand($pokedexRef->getPvMin(),$pokedexRef->getPvMax());
+                $pokemon->setPvMax($pvMax);
+                $pokemon->setPv(rand(0, $pvMax));
+                $pokemon->setLevel(rand(0, 100));
+                $pokemon->setMaster($user);
+                $pokemon->setPokedex($pokedexRef);
+                $teamPokemons[] = $pokemon;
+            }
+            $team = new Team();
+            $team->setName("randomName");
+            // $team->setMax(3);
+            $team->setMaster($user);
+            foreach($teamPokemons as $userPokemon){
+                $team->addMonster($userPokemon);
+            }
+            $team->setStatus('online');
             
-            $pokemon->setPokedex($pokedexRef);
-            $pokemons[] = $pokemon;
+            array_push($pokemons, ...$teamPokemons);
+            $manager->persist($team);
         }
-
         foreach ($pokemons as $pokemon) {
            $manager->persist($pokemon);
         }
+        foreach ($users as $user) {
+
+
+        }
+
+      
         //POKEMON FIXTURES
 
 

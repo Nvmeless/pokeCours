@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PokemonRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -15,32 +17,41 @@ class Pokemon
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getAllPokedex","getProfile"])]
+    
+    #[Groups(["getAllPokedex","getProfile", "getBattleInfos"])]
 
     private ?string $name = null;
 
     #[ORM\Column]
-    #[Groups(["getAllPokedex"])]
+    #[Groups(["getAllPokedex", "getBattleInfos"])]
 
     private ?int $pv_max = null;
 
     #[ORM\Column]
-    #[Groups(["getAllPokedex"])]
+    #[Groups(["getAllPokedex", "getBattleInfos"])]
 
     private ?int $pv = null;
 
     #[ORM\Column]
-    #[Groups(["getAllPokedex","getProfile"])]
+    #[Groups(["getAllPokedex","getProfile", "getBattleInfos"])]
 
     private ?int $level = null;
 
     #[ORM\ManyToOne(inversedBy: 'pokemon')]
-    #[Groups(["getAllPokedex","getProfile"])]
+    #[Groups(["getAllPokedex","getProfile", "getBattleInfos"])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Pokedex $pokedex = null;
 
     #[ORM\ManyToOne(inversedBy: 'pokemon')]
     private ?User $master = null;
+
+    #[ORM\ManyToMany(targetEntity: Team::class, mappedBy: 'monsters')]
+    private Collection $teams;
+
+    public function __construct()
+    {
+        $this->teams = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -115,6 +126,33 @@ class Pokemon
     public function setMaster(?User $master): static
     {
         $this->master = $master;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Team>
+     */
+    public function getTeams(): Collection
+    {
+        return $this->teams;
+    }
+
+    public function addTeam(Team $team): static
+    {
+        if (!$this->teams->contains($team)) {
+            $this->teams->add($team);
+            $team->addMonster($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTeam(Team $team): static
+    {
+        if ($this->teams->removeElement($team)) {
+            $team->removeMonster($this);
+        }
 
         return $this;
     }

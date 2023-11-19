@@ -16,7 +16,7 @@ class Pokedex
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getAllPokedex"])]
+    #[Groups(["getAllPokedex", "getBattleInfos"])]
     private ?int $id = null;
     
     //To Anonymise
@@ -28,11 +28,11 @@ class Pokedex
         minMessage: 'Your first name must be at least {{ limit }} characters long',
         maxMessage: 'Your first name cannot be longer than {{ limit }} characters',
     )]
-    #[Groups(["getAllPokedex", "getProfile"])]
+    #[Groups(["getAllPokedex", "getProfile", "getBattleInfos"])]
     private ?string $name = null;
 
     #[ORM\Column]
-    #[Groups(["getAllPokedex"])]
+    #[Groups(["getAllPokedex", "getBattleInfos"])]
     private ?int $pv_min = null;
 
     #[ORM\Column]
@@ -80,11 +80,11 @@ class Pokedex
     private Collection $devolution_id;
 
     #[ORM\Column]
-    #[Groups(["getAllPokedex", "getProfile"])]
+    #[Groups(["getAllPokedex", "getProfile", "getBattleInfos"])]
     private ?int $pokemon_id_first = null;
 
     #[ORM\Column]
-    #[Groups(["getAllPokedex", "getProfile"])]
+    #[Groups(["getAllPokedex", "getProfile", "getBattleInfos"])]
     private ?int $pokemon_id_second = null;
 
     #[ORM\OneToMany(mappedBy: 'pokedex', targetEntity: Pokemon::class)]
